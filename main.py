@@ -40,7 +40,7 @@ def check(typeDir):
             i=0
             while i<int(columnNum):
                 i=i+1
-                columnNmae=input("请输入字段名")
+                columnNmae=input("请输入字段名:")
                 #inpitColumn是字段名，而intDeal返回的是其相对应的字典
                 columnDir[columnNmae]=intDeal()
             typeDir["intDir"]=columnDir
@@ -61,19 +61,26 @@ def check(typeDir):
         return typeDir
     
 def createSQL(tableName,typeDir,numStr):
-    firstPart="insert into "+tableName+"("
+    sql="insert into "+tableName+"("
     typeNameDir=typeDir.keys()
     typeNameList=list(typeNameDir)
-    
-    columnName=typeDir[typeNameList[0]]
-    print(">>>>>>>>>")
-    print(columnName)
-    print(c)
-    for element in columnName:
-        elementName=list(element)
-        sql=firstPart+elementName+","
+    i=0
+    num=len(typeNameList)
+    columnAll=[]
+    while i<num:
+        partColumn=list(typeDir[typeNameList[i]].keys())
+        for part in partColumn:
+            columnAll.append(part)
+        i=i+1
+    #columnName=typeDir[typeNameList[0]]
+    print(columnAll)
+    for element in columnAll:
+        sql=sql+element+","
     sql=sql[:-1]
-    sql=sql+")"
+    #到此得到<<insert into tablename(column1,column2,```) values('>>
+    sql=sql+")"+"values('"
+
+    
     return sql
 
 #列为int型时的处理
@@ -111,6 +118,12 @@ def stringDeal():
         detailDir["addself"]="2"
         detailDir["setNum"]=setNumStr
         return detailDir
+
+#处理values的值
+def valuesDeal(columnType):
+    if columnType=="intDir":
+        
+
     
 if __name__=='__main__':  
     main()
