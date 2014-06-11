@@ -6,7 +6,10 @@ def main():
     tableName=input("请输入数据表名:")
     typeDir={}
     typeDir=check(typeDir)
-    print(typeDir.item)
+    print(typeDir.keys())
+    numStr="1"
+    sql=createSQL(tableName,typeDir,numStr)
+    print(sql)
     '''f=open("inserData.sql",'w')
     i=1
     num=input("将要生成的sql语句多少条？:")
@@ -57,10 +60,18 @@ def check(typeDir):
     else:
         return typeDir
     
-def createsql(tableName,typeDir,numStr):
-    sql="insert into "+table+"("
-    for element in li:
-        sql=sql+"'"+element+numStr+"',"
+def createSQL(tableName,typeDir,numStr):
+    firstPart="insert into "+tableName+"("
+    typeNameDir=typeDir.keys()
+    typeNameList=list(typeNameDir)
+    
+    columnName=typeDir[typeNameList[0]]
+    print(">>>>>>>>>")
+    print(columnName)
+    print(c)
+    for element in columnName:
+        elementName=list(element)
+        sql=firstPart+elementName+","
     sql=sql[:-1]
     sql=sql+")"
     return sql
