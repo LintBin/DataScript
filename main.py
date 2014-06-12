@@ -1,34 +1,25 @@
-#!/usr/bin/env python3  
+#!/usr/bin/env python3
 import os,os.path  
 import string,base64
 import string
 def main():
-    #tableName=input("请输入数据表名:")
-    #typeDir={}
-    #typeDir=check(typeDir)
-    tableName="tablename"
-    typeDir={'intDir': {'flag': {'type': 'int', 'addself': '2', 'setNum': 10000}, 'myid': {'type': 'int', 'addself': '1', 'beginNum': '0'}}, 'stringDir': {'docu': {'type': 'string', 'addself': '1', 'beginNum': '0'}, 'color': {'type': 'string', 'addself': '2', 'setNum': 'color'}}}
-    print(typeDir.keys())
-    numStr="1"
-    sql=createSQL(tableName,typeDir,numStr)
-    print()
-    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>end>>>>>>>>>>>>>>>>")
-    print(sql)
-    print(typeDir)
-    '''f=open("inserData.sql",'w')
-    i=1
-    num=input("将要生成的sql语句多少条？:")
-    numStr=str(num)
-    while i<int(num):
-        sql=createsql(table,li,str(i))
-        i=i+1
+    tableName=input("请输入数据表名:")
+    typeDir={}
+    typeDir=check(typeDir)
+    f=open("inserData.sql",'w')
+    #tableName="tablename"
+    #typeDir={'stringDir': {'color': {'type': 'string', 'setNum': 'color', 'addself': '2'}, 'docu': {'type': 'string', 'beginNum': '20', 'addself': '1'}}, 'intDir': {'flag': {'type': 'int', 'setNum': 0, 'addself': '2'}, 'myid': {'type': 'int', 'beginNum': '1000', 'addself': '1'}}}
+    sqlAmount=int(input("需要生成多少条sql语句？"))
+    i=0
+    while i<sqlAmount:
+        sql=createSQL(tableName,typeDir,str(i))
+        f.write(sql+"\n")
+        print(str(i))
         print(sql)
-        
-    '''
-    #sql="insert into values "+table+"("+li[0]+"','"
-    #print(sql)
- 
-    #f.close()
+        i=i+1
+    f.close()
+    print(typeDir)
+
 
 #递归，检查是否需要输入字段
 def check(typeDir):
@@ -86,15 +77,12 @@ def createSQL(tableName,typeDir,numStr):
     sql=sql+")"+"values('"
     #partTypeDir就是columnDir
     for partTypeDir in typeDir:
-        print("partTypeDir:"+partTypeDir)
         typeDir[partTypeDir]
-        print(typeDir[partTypeDir])
-        for clomnName in typeDir[partTypeDir]:
-            print("clomnName>>"+clomnName)
-            columnValue=valuesDeal(typeDir[partTypeDir][clomnName],1)
-            print(columnValue)
+        for columnName in typeDir[partTypeDir]:
+            columnValue=valuesDeal(typeDir[partTypeDir][columnName],int(numStr),columnName)
+            sql=sql+str(columnValue)+"','"
             
-    
+    sql=sql[:-2]+")"
     return sql
 
 #列为int型时的处理
@@ -118,6 +106,7 @@ def intDeal():
         detailDir["setNum"]=setNumInt
         return detailDir
 
+#列为string型时的处理
 def stringDeal():
     print("1--字段名加自增的数字")
     print("2--设置固定值")
@@ -136,16 +125,21 @@ def stringDeal():
         return detailDir
 
 #处理values的值
-def valuesDeal(columnType,num):
-    print(">>>>>>>>>>>>>>>>>"+columnType["type"])
-    if columnType=="int":
+def valuesDeal(columnType,num,columnName):
+    if columnType["type"]=="int":
         if columnType["addself"]=="1":
-            returnNum=int(columnType["setNum"])+num
+            returnNum=int(columnType["beginNum"])+num
             returnNumStr=str(returnNum)
             return returnNum
-        if columntype["addself"]=="2":
+        if columnType["addself"]=="2":
             return columnType["setNum"]
-
+        return ""
+    if columnType["type"]=="string":
+        if columnType["addself"]=="1":
+            returnNum=int(columnType["beginNum"])+num
+            return columnName+str(returnNum)
+        if columnType["addself"]=="2":
+            return columnType["setNum"]
 
     
 if __name__=='__main__':
