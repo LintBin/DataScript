@@ -3,13 +3,18 @@ import os,os.path
 import string,base64
 import string
 def main():
-    tableName=input("请输入数据表名:")
-    typeDir={}
-    typeDir=check(typeDir)
+    #tableName=input("请输入数据表名:")
+    #typeDir={}
+    #typeDir=check(typeDir)
+    tableName="tablename"
+    typeDir={'intDir': {'flag': {'type': 'int', 'addself': '2', 'setNum': 10000}, 'myid': {'type': 'int', 'addself': '1', 'beginNum': '0'}}, 'stringDir': {'docu': {'type': 'string', 'addself': '1', 'beginNum': '0'}, 'color': {'type': 'string', 'addself': '2', 'setNum': 'color'}}}
     print(typeDir.keys())
     numStr="1"
     sql=createSQL(tableName,typeDir,numStr)
+    print()
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>end>>>>>>>>>>>>>>>>")
     print(sql)
+    print(typeDir)
     '''f=open("inserData.sql",'w')
     i=1
     num=input("将要生成的sql语句多少条？:")
@@ -79,7 +84,16 @@ def createSQL(tableName,typeDir,numStr):
     sql=sql[:-1]
     #到此得到<<insert into tablename(column1,column2,```) values('>>
     sql=sql+")"+"values('"
-
+    #partTypeDir就是columnDir
+    for partTypeDir in typeDir:
+        print("partTypeDir:"+partTypeDir)
+        typeDir[partTypeDir]
+        print(typeDir[partTypeDir])
+        for clomnName in typeDir[partTypeDir]:
+            print("clomnName>>"+clomnName)
+            columnValue=valuesDeal(typeDir[partTypeDir][clomnName],1)
+            print(columnValue)
+            
     
     return sql
 
@@ -88,6 +102,7 @@ def intDeal():
     print("1--自增")
     print("2--设置固定值")
     detailDir={}
+    detailDir["type"]="int"
     addself=input("是否自增：")
     if addself=="1":
         beginNumStr=input("自增开始数值:")
@@ -107,6 +122,7 @@ def stringDeal():
     print("1--字段名加自增的数字")
     print("2--设置固定值")
     detailDir={}
+    detailDir["type"]="string"
     addself=input("是否固定")
     if addself=="1":
         beginNumStr=input("自增开始数值:")
@@ -120,12 +136,17 @@ def stringDeal():
         return detailDir
 
 #处理values的值
-def valuesDeal(columnType):
-    if columnType=="intDir":
-        
+def valuesDeal(columnType,num):
+    print(">>>>>>>>>>>>>>>>>"+columnType["type"])
+    if columnType=="int":
+        if columnType["addself"]=="1":
+            returnNum=int(columnType["setNum"])+num
+            returnNumStr=str(returnNum)
+            return returnNum
+        if columntype["addself"]=="2":
+            return columnType["setNum"]
+
 
     
-if __name__=='__main__':  
+if __name__=='__main__':
     main()
-
-
